@@ -1,5 +1,7 @@
 package app.components.dao;
 
+import app.components.exception.CityNotFoundException;
+import app.components.exception.ForecastNotFoundException;
 import app.components.model.City;
 import app.components.model.Forecast;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +49,7 @@ public class ForecastDAO {
         {
             return result.get(0);
         }
-
-        return null;
+        throw new CityNotFoundException("City " + name + " not found!");
     }
 
     public Forecast getForecast(String name){
@@ -65,7 +66,6 @@ public class ForecastDAO {
         {
             return result.get(0);
         }
-
-        return null;
+        throw new ForecastNotFoundException("Forecast for city " + name + " not found!");
     }
 }

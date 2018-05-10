@@ -1,6 +1,8 @@
 package app.components.service;
 
 import app.components.dao.ForecastDAO;
+import app.components.exception.CityNotFoundException;
+import app.components.exception.ForecastNotFoundException;
 import app.components.model.City;
 import app.components.model.Forecast;
 import app.components.util.ForecastConverter;
@@ -13,7 +15,7 @@ public class ForecastService {
     @Autowired
     private ForecastDAO dao;
 
-    public ForecastCityView getForecast(String name){
+    public ForecastCityView getForecast(String name)  {
         City city = dao.getCity(name);
         Forecast forecast = dao.getForecast(name);
         ForecastCityView view = ForecastConverter.toView(city, forecast);

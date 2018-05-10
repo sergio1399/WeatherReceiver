@@ -44,8 +44,8 @@ public class ForecastConverter {
         String cityRegion = location.getString("region");
         String link = json.getJSONObject("query").getJSONObject("results").getJSONObject("channel").getString("link");
         String cityId = link.split("-")[1].split("/")[0];
-        ForecastCityView view = new ForecastCityView(jsonToForecast(json), Integer.valueOf(cityId), cityName, cityRegion, cityCountry);
-        return view;
+        Forecast forecast = jsonToForecast(json);
+        return toView(new City(Integer.valueOf(cityId), cityName, cityRegion, cityCountry), forecast );
     }
 
     public static Forecast viewToForecast(ForecastCityView view){
@@ -59,8 +59,9 @@ public class ForecastConverter {
     }
 
     public static ForecastCityView toView(City city, Forecast forecast){
-        ForecastCityView view = new ForecastCityView(forecast, city);
-        return view;
+        return new ForecastCityView.Builder(city.getName()).cityRegion(city.getRegion()).cityCountry(city.getCountry()).
+                temperature(forecast.getTemperature()).wind(forecast.getWind()).text(forecast.getText()).pressure(forecast.getPressure()).
+                visibility(forecast.getVisibility()).cityId(city.getId()).forecastDate(forecast.getForecastDate()).build();
     }
 
 }
