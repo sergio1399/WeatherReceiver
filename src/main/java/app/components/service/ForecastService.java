@@ -1,8 +1,6 @@
 package app.components.service;
 
 import app.components.dao.ForecastDAO;
-import app.components.exception.CityNotFoundException;
-import app.components.exception.ForecastNotFoundException;
 import app.components.model.City;
 import app.components.model.Forecast;
 import app.components.util.ForecastConverter;
@@ -12,13 +10,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ForecastService {
-    @Autowired
+
     private ForecastDAO dao;
+
+    @Autowired
+    public void setDao(ForecastDAO dao) {
+        this.dao = dao;
+    }
 
     public ForecastCityView getForecast(String name)  {
         City city = dao.getCity(name);
         Forecast forecast = dao.getForecast(name);
-        ForecastCityView view = ForecastConverter.toView(city, forecast);
-        return view;
+        return ForecastConverter.toView(city, forecast);
     }
 }

@@ -7,10 +7,14 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class ForecastConverter {
 
-    public static Forecast jsonToForecast(JSONObject json){
+    private static SimpleDateFormat RFC822DATEFORMAT
+            = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm aaa Z", Locale.US);
+
+    public static Forecast jsonToForecast(JSONObject json) throws ClassCastException, NullPointerException, ParseException{
         JSONObject channel = json.getJSONObject("query").getJSONObject("results").getJSONObject("channel");
         Forecast forecast = new Forecast();
         if(channel.has("wind")) {
@@ -24,20 +28,16 @@ public class ForecastConverter {
         }
         if(channel.has("item")) {
             JSONObject condition = channel.getJSONObject("item").getJSONObject("condition");
-            SimpleDateFormat format = new SimpleDateFormat();
-            format.applyPattern("dd.MM.yyyy");
-            try {
-                forecast.setForecastDate(format.parse(condition.getString("date")));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+
+            forecast.setForecastDate(RFC822DATEFORMAT.parse(condition.getString("date")));
+
             forecast.setTemperature(condition.getString("temp"));
             forecast.setText(condition.getString("text"));
         }
         return forecast;
     }
 
-    public static ForecastCityView jsonToForecastCityView(JSONObject json){
+    public static ForecastCityView jsonToForecastCityView(JSONObject json) throws ClassCastException, NullPointerException, ParseException{
         JSONObject location = json.getJSONObject("query").getJSONObject("results").getJSONObject("channel").getJSONObject("location");
         String cityName = location.getString("city");
         String cityCountry = location.getString("country");
@@ -48,17 +48,17 @@ public class ForecastConverter {
         return toView(new City(Integer.valueOf(cityId), cityName, cityRegion, cityCountry), forecast );
     }
 
-    public static Forecast viewToForecast(ForecastCityView view){
+    public static Forecast viewToForecast(ForecastCityView view) throws ClassCastException, NullPointerException{
         Forecast forecast = new Forecast(view.temperature, view.wind, view.text, view.pressure, view.visibility, view.forecastDate);
         forecast.setCity(viewToCity(view));
         return forecast;
     }
 
-    public static City viewToCity(ForecastCityView view){
+    public static City viewToCity(ForecastCityView view) throws ClassCastException, NullPointerException{
         return new City(view.cityId, view.cityName, view.cityRegion, view.cityCountry);
     }
 
-    public static ForecastCityView toView(City city, Forecast forecast){
+    public static ForecastCityView toView(City city, Forecast forecast) throws ClassCastException, NullPointerException{
         return new ForecastCityView.Builder(city.getName()).cityRegion(city.getRegion()).cityCountry(city.getCountry()).
                 temperature(forecast.getTemperature()).wind(forecast.getWind()).text(forecast.getText()).pressure(forecast.getPressure()).
                 visibility(forecast.getVisibility()).cityId(city.getId()).forecastDate(forecast.getForecastDate()).build();

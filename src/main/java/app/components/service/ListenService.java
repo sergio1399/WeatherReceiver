@@ -10,15 +10,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ListenService {
-    @Autowired
+
     private ForecastDAO dao;
+
+    @Autowired
+    public void setDao(ForecastDAO dao) {
+        this.dao = dao;
+    }
 
     @Transactional
     public void save(ForecastCityView view){
 
         Forecast forecast = ForecastConverter.viewToForecast(view);
         dao.saveCityAndForecast(forecast.getCity(), forecast);
-        //throw new RuntimeException("Handmade exception!");
     }
 
 }

@@ -4,8 +4,6 @@ import app.components.exception.CityNotFoundException;
 import app.components.exception.ForecastNotFoundException;
 import app.components.model.City;
 import app.components.model.Forecast;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +23,7 @@ public class ForecastDAO {
     private EntityManager entityManager;
 
     @Transactional
-    public boolean saveCityAndForecast(City city, Forecast forecast){
+    public void saveCityAndForecast(City city, Forecast forecast){
         City oldCity = entityManager.find(City.class, city.getId());
         if(oldCity == null) {
             entityManager.persist(city);
@@ -33,7 +31,6 @@ public class ForecastDAO {
         city = entityManager.find(City.class, city.getId());
         forecast.setCity(city);
         entityManager.persist(forecast);
-        return true;
     }
 
     public City getCity(String name){

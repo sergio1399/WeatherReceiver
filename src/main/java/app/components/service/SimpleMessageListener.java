@@ -21,8 +21,12 @@ import java.io.IOException;
 @Service
 public class SimpleMessageListener implements MessageListener {
 
-    @Autowired
     private ListenService service;
+
+    @Autowired
+    public void setService(ListenService service) {
+        this.service = service;
+    }
 
     public void onMessage(Message message) {
         TextMessage textMessage = (TextMessage) message;
@@ -30,11 +34,9 @@ public class SimpleMessageListener implements MessageListener {
         ForecastCityView view = null;
         try {
             view = objectMapper.readValue(textMessage.getText(), ForecastCityView.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JMSException e) {
+            service.save(view);
+        } catch (IOException | JMSException e) {
             e.printStackTrace();
         }
-        service.save(view);
     }
 }

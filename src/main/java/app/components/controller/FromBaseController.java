@@ -9,14 +9,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @RequestMapping(value = "find", produces = APPLICATION_JSON_VALUE)
 public class FromBaseController {
 
+    private ForecastService service;
+
     @Autowired
-    ForecastService service;
+    public void setService(ForecastService service) {
+        this.service = service;
+    }
 
     @RequestMapping(value = "/view_from_base", method = {GET})
     public ForecastCityView getFromBase(@RequestParam(value="city", required=true) String city){
